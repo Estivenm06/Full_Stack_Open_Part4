@@ -1,0 +1,14 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+//Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3QxIiwiaWQiOiI2NjY0YWM0MmM3MDAyYTYyN2NiNTFhNDAiLCJpYXQiOjE3MTc4NzM3OTYsImV4cCI6MTcxNzg3NzM5Nn0.wBVLDnm3Q6x40271YT9VRBCibRP_zi6Ig2dO3QCkG0A
+
+{
+     "title": "Token_test_middleware",
+        "author": "Token_test_middleware",
+        "url": "www.Token_test_middleware.com",
+        "likes": 1
+}
+
+###
+
+GET http://localhost:3001/api/blogs

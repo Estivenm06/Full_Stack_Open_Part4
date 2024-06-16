@@ -36,34 +36,41 @@ blogRouter.post("/", async (request, response, next) => {
   }catch(err){next(err)}
 });
 
-blogRouter.put("/:id", async (request, response) => {
-  const id = request.params.id;
-  const body = request.body;
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
+blogRouter.put("/:id", async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+  const user = request.user
+  const {title, author, url, likes} = request.body
+  const blog_toUpdate = {
+    title: title,
+    author: author,
+    url: url,
+    likes: likes,
   };
-
-  const blogs = await Blog.findByIdAndUpdate(id, blog);
-  response.json(blogs);
+  if(blog.user.toString() !== user.id.toString()){
+    return response
+      .status(401)
+      .json({error: "Only the creator can update blogs"})
+  }
+  try{
+    const blogs = await Blog.findByIdAndUpdate(blog, blog_toUpdate);
+    response.json(blogs);
+  }catch(err){next(err)}
 });
 
-blogRouter.delete("/:id", async (request, response) => {
-    const decodedToken = getTokenFrom(request, response);
-  const blog = await Blog.findById(request.params.id);
-  const user = await User.findById(decodedToken.id);
+blogRouter.delete("/:id", async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+  const user = request.user
 
   if (blog.user.toString() !==  user.id.toString()) {
     return response
       .status(401)
       .json({ error: "Only the creator can delete blogs" });
   }
-
-  user.blogs = user.blogs.filter((e) => e.toString() === blog.id.toString());
-  await blog.deleteOne();
-  response.status(204).end();
+  try{
+    user.blogs = user.blogs.filter((e) => e.toString() === blog.id.toString());
+    await blog.deleteOne();
+    response.status(204).end();
+  }catch(err){next(err)}
 });
 
 module.exports = blogRouter;

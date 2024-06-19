@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
+require("dotenv").config()
 const requestLogger = (request, response, next) => {
     console.log("Method", request.method)
     console.log("Path ", request.path)
@@ -24,26 +25,30 @@ const errorHandler = (error, request, response, next) => {
     }
     next(error)
   }
-
+  
+  const userExtractor = async (request, response, next) => {
+    let user = null;
+    try{
+      if(request.token){
+        const decodedToken = jwt.verify(request.token, process.env.SECRET)
+        user = await User.findById(decodedToken.id)
+      }
+    }catch(err){
+      console.error("Error verifying token", err)
+    }
+    request.user = user;
+    next();
+  }
 const tokenExtractor = (request, response, next) => {
   const decodedToken = request.get("authorization")
-  request.token = null
   if(decodedToken && decodedToken.startsWith("Bearer ")){
     request.token = decodedToken.substring(7)
+  }else{
+    request.token = null
   }
   next()
 }
 
-const userExtractor = async (request, response, next) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if(!decodedToken.id){
-    response.status(401).send({error: "token invalid"})
-  }else{
-    const user = await User.findById(decodedToken.id)
-    request.user = user
-    next()
-  }
-}
 
 module.exports = {
     requestLogger,

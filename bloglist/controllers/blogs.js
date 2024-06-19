@@ -1,10 +1,9 @@
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog.js");
-const User = require("../models/user.js");
 
 blogRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", {"username": 1, "name": 1, "id":1});
-  response.json(blogs);
+  const blogs = await Blog.find({}).populate("user", {"username": 1, "name": 1});
+    response.json(blogs);
 });
 
 blogRouter.get("/:id", async (request, response) => {
@@ -27,12 +26,11 @@ blogRouter.post("/", async (request, response, next) => {
     likes: likes,
     user: user.id,
   });
-  try{
   const savedBlogs = await (await blog.save()).populate("user", ["username", "name", "id"]);
   user.blogs = user.blogs.concat(savedBlogs._id);
   await user.save();
+  try{
   response.status(201).json(savedBlogs);
-
   }catch(err){next(err)}
 });
 
@@ -51,8 +49,8 @@ blogRouter.put("/:id", async (request, response, next) => {
       .status(401)
       .json({error: "Only the creator can update blogs"})
   }
+  const blogs = await Blog.findByIdAndUpdate(blog, blog_toUpdate);
   try{
-    const blogs = await Blog.findByIdAndUpdate(blog, blog_toUpdate);
     response.json(blogs);
   }catch(err){next(err)}
 });
@@ -66,9 +64,9 @@ blogRouter.delete("/:id", async (request, response, next) => {
       .status(401)
       .json({ error: "Only the creator can delete blogs" });
   }
+  user.blogs = user.blogs.filter((e) => e.toString() === blog.id.toString());
+  await blog.deleteOne();
   try{
-    user.blogs = user.blogs.filter((e) => e.toString() === blog.id.toString());
-    await blog.deleteOne();
     response.status(204).end();
   }catch(err){next(err)}
 });

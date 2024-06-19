@@ -144,41 +144,37 @@ describe("update of a blog", () => {
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .set("Authorization", authorization)
-      .send({likes: 155})
+      .send({ likes: 155 })
       .expect(200);
     const blogsAtEnd = await blogsInDb();
-    const likes = blogsAtEnd.map(e => e.likes)
-    expect(likes[0]).toEqual(155)
+    const likes = blogsAtEnd.map((e) => e.likes);
+    expect(likes[0]).toEqual(155);
   });
 });
 
-/*
-      describe("With logining status", () => {
-        const newBlog = {
-          "title": "Canonical string reduction",
-    "author": "Edsger W. Dijkstra",
-    "url": "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-    "likes": 12
-  }
-*/
-/*
-  test('status code 401 Unauthorized', async () => {
-    const authorization = await getInvalidToken()
+describe("With logining status", () => {
+  const newBlog = {
+    title: "Canonical string reduction",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+    likes: 12,
+  };
+
+  test("status code 401 Unauthorized", async () => {
+    const authorization = await getInvalidToken();
     const newBlog401 = {
-      "title": newBlog.title,
-      "url": newBlog.url,
-      "likes": 0
-    }  
+      title: newBlog.title,
+      url: newBlog.url,
+      likes: 0,
+    };
 
     await api
-      .post('/api/blogs')
+      .post("/api/blogs")
       .set("Authorization", authorization)
       .send(newBlog401)
-      .expect(401)
-
-   },)
-})
-*/
+      .expect(401);
+  });
+});
 afterAll(async () => {
   await mongoose.connection.close();
 });

@@ -35,23 +35,19 @@ blogRouter.post("/", async (request, response, next) => {
 });
 
 blogRouter.put("/:id", async (request, response, next) => {
+  try{
   const blog = await Blog.findById(request.params.id)
   const user = request.user
   const {title, author, url, likes} = request.body
-  const blog_toUpdate = {
-    title: title,
-    author: author,
-    url: url,
-    likes: likes,
-  };
-  if(blog.user.toString() !== user.id.toString()){
+
+  if(blog.user.toString() !== user._id.toString()){
     return response
-      .status(401)
-      .json({error: "Only the creator can update blogs"})
+    .status(401)
+    .json({error: "Only the creator can update blogs"})
   }
-  const blogs = await Blog.findByIdAndUpdate(blog, blog_toUpdate);
-  try{
-    response.json(blogs);
+
+  const updatedBlog = await Blog.findByIdAndUpdate(blog._id, {title, author, url, likes}, {new: true})
+    response.json(updatedBlog);
   }catch(err){next(err)}
 });
 

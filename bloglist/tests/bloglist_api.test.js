@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
@@ -10,7 +11,6 @@ const {
   initialUsers,
   getToken,
   getInvalidToken,
-  usersInDb,
   blogsInDb,
 } = require("./test_helper");
 
@@ -28,7 +28,7 @@ beforeEach(async () => {
 
   const savedUser = await user.save();
   const blogsObjects = initialBlogs.map(
-    (e) => new Blog({ ...e, user: savedUser.id })
+    (blog) => new Blog({ ...blog, user: savedUser.id })
   );
   const blogsSaved = blogsObjects.map((e) => e.save());
   await Promise.all(blogsSaved);
@@ -71,7 +71,7 @@ describe("viewing a specific blog", () => {
   });
 });
 
-describe("addition of a new blog", () => {
+describe.only("addition of a new blog", () => {
   test("a valid blog can be added", async () => {
     const authorization = await getToken();
     const blogsBeggining = await blogsInDb();

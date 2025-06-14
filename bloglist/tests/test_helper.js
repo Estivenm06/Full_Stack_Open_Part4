@@ -1,4 +1,4 @@
-const { first } = require("lodash")
+/* eslint-disable no-undef */
 const Blog = require("../models/blog")
 const User = require("../models/user")
 const jwt = require("jsonwebtoken")
@@ -83,7 +83,7 @@ const getInvalidToken = async () => {
 
 const blogsInDb = async() => {
     const blogs = await Blog.find({})
-    return blogs.map(e => e.toJSON())
+    return blogs.map(blog => blog.toJSON())
 }
 
 const usersInDb = async() => {

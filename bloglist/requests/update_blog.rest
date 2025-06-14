@@ -1,0 +1,14 @@
+PUT http://localhost:3001/api/blogs/your_blog_id_here
+Content-Type: application/json
+Authorization: Bearer your_token_here
+
+{
+        "title": "Token_update_middleware",
+        "author": "Token_update_middleware",
+        "url": "www.Token_update_middleware.com",
+        "likes": 100
+}
+
+###
+
+GET http://localhost:3001/api/blogs/

@@ -1,9 +1,9 @@
+/* eslint-disable no-undef */
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-const loginRouter = require("express").Router()
 const User = require("../models/user")
 
-loginRouter.post("/", async(request, response) => {
+const login =  async (request, response) => {
     const {username, password} = request.body
 
     const user = await User.findOne({username: username})
@@ -24,6 +24,6 @@ loginRouter.post("/", async(request, response) => {
     
     response
         .send({ token: token, username: user.username, name: user.name })
-})
+};
 
-module.exports = loginRouter;
+module.exports = login

@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
-require("dotenv").config()
 const requestLogger = (request, response, next) => {
     console.log("Method", request.method)
     console.log("Path ", request.path)
@@ -31,14 +31,18 @@ const errorHandler = (error, request, response, next) => {
     try{
       if(request.token){
         const decodedToken = jwt.verify(request.token, process.env.SECRET)
+        console.log(decodedToken);
+        
         user = await User.findById(decodedToken.id)
+        console.log(user);
+        request.user = user;
       }
     }catch(err){
       console.error("Error verifying token", err)
     }
-    request.user = user;
     next();
-  }
+}
+
 const tokenExtractor = (request, response, next) => {
   const decodedToken = request.get("authorization")
   if(decodedToken && decodedToken.startsWith("Bearer ")){

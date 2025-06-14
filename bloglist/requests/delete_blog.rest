@@ -1,0 +1,6 @@
+DELETE http://localhost:3001/api/blogs/your_blog_id_here
+Authorization: Bearer your_token_here
+
+###
+
+GET http://localhost:3001/api/blogs

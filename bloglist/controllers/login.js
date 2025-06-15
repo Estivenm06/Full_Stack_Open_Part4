@@ -23,7 +23,7 @@ const login =  async (request, response) => {
     const token = jwt.sign(userForToken, process.env.SECRET, {expiresIn: 60*60})
     
     response
-        .send({ token: token, username: user.username, name: user.name })
+        .send({ token: token, username: user.username, name: user.name, userId: user._id })
 };
 
 module.exports = login
